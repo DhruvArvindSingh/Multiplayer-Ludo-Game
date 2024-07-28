@@ -1,0 +1,292 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --main_board: 550px;
+    --inner_board: 525px;
+    --player_container: 210px;
+    --small_square: 35px;
+    --inner_player_container: calc(0.7 * var(--player_container));
+    --middle_path_width_v: calc(3*var(--small_square));
+    --middle_path_height_v: calc(6*var(--small_square));
+    --middle_path_width_h: calc(6*var(--small_square));
+    --middle_path_height_h: calc(3*var(--small_square));
+
+    /* player_card */
+    --player_card_width: 225px;
+    --player_card_height: 200px;
+}
+
+body {
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+
+
+
+
+
+
+
+
+
+/* Ludo Board  */
+
+.main_board {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    width: var(--main_board);
+    transform: 1s;
+}
+
+.inner_board {
+    background-color: rgb(17, 6, 6);
+    display: grid;
+    grid-template-columns: var(--player_container) 105px var(--player_container);
+    grid-template-rows: var(--player_container) 105px var(--player_container);
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    max-width: var(--inner_board);
+}
+
+.player_container {
+    background-color: aqua;
+    aspect-ratio: 1/1;
+    max-width: var(--player_container);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.middle_path_v {
+    display: grid;
+    grid-template-columns: var(--small_square) var(--small_square) var(--small_square);
+    grid-template-rows: repeat(6, var(--small_square));
+    width: var(--middle_path_width_v);
+    height: var(--middle_path_height_v);
+    grid-auto-flow: column;
+    background-color: rgb(255, 0, 0);
+}
+
+.middle_path_h {
+    display: grid;
+    grid-template-rows: var(--small_square) var(--small_square) var(--small_square);
+    grid-template-columns: repeat(6, var(--small_square));
+    width: var(--middle_path_width_h);
+    height: var(--middle_path_height_h);
+    grid-auto-flow: row;
+    background-color: rgb(255, 0, 0);
+}
+
+.square {
+    background-color: white;
+    border: 1px solid black;
+    aspect-ratio: 1/1;
+    color: black;
+    max-width: var(--small_square);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center_container {
+    background-color: rgb(23, 111, 234);
+    aspect-ratio: 1/1;
+    width: 105px;
+}
+
+.inner_player_container {
+    aspect-ratio: 1/1;
+    width: 150px;
+    background-color: aliceblue;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.outer_piece_container {
+    aspect-ratio: 1/1;
+    width: 75px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece_container {
+    aspect-ratio: 1/1;
+    width: 45px;
+    border-radius: 100px;
+    border: 1px solid black;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece {
+    aspect-ratio: 1/1;
+    width: 25px;
+    /* background-color: red; */
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    cursor: pointer;
+}
+
+
+
+
+
+/* Piece Color  */
+
+.yellow_piece {
+    background-color: rgb(161, 161, 21);
+}
+
+.red_piece {
+    background-color: rgb(183, 0, 0);
+}
+
+.green_piece {
+    background-color: rgb(11, 74, 11);
+}
+
+.blue_piece {
+    background-color: rgb(9, 81, 183);
+}
+
+
+
+
+
+/* Player Container Color   */
+#player_container_1 {
+    background-color: rgb(23, 111, 234);
+}
+
+#player_container_2 {
+    background-color: rgb(236, 236, 49);
+
+}
+
+#player_container_3 {
+    background-color: rgb(11, 112, 11);
+}
+
+#player_container_4 {
+    background-color: red;
+}
+
+
+
+.blue_square {
+    background-color: rgb(23, 111, 234)
+}
+
+.yellow_square {
+    background-color: rgb(236, 236, 49)
+}
+
+.green_square {
+    background-color: rgb(11, 112, 11);
+}
+
+.red_square {
+    background-color: red;
+}
+
+
+
+/* Player_Card */
+
+.player_card_1,
+.player_card_2,
+.player_card_3,
+.player_card_4 {
+    width: var(--player_card_width);
+    height: var(--player_card_height);
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border-radius: 30px;
+    /* left: 0px; */
+}
+
+.player_card_1 {
+    left: 42px;
+    bottom: 20px;
+}
+
+.player_card_2 {
+    left: 42px;
+    top: 20px;
+}
+
+.player_card_3 {
+    right: 42px;
+    top: 20px;
+}
+
+.player_card_4 {
+    right: 42px;
+    bottom: 20px;
+}
+
+.player_video {
+    aspect-ratio: 16/9;
+    width: 60%;
+    /* border-radius:30px; */
+    background-color: orangered;
+}
+
+.player_details {
+    width: 100%;
+    height: 100%;
+    /* background-color: white; */
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* gap: 10px; */
+}
+
+.player_name {
+    font-size: 20px;
+    font-weight: 600;
+    background-color: bisque;
+    width: 100%;
+    height: 40%;
+    text-align: center;
+    border-radius: 26px;
+}
+
+.player_dice {
+    font-size: 20px;
+    font-weight: 600;
+    background-color: rgb(43, 19, 132);
+    width: 100%;
+    height: 60%;
+    text-align: center;
+    border-radius: 26px;
+}

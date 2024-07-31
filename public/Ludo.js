@@ -274,13 +274,15 @@ function pause(time) {
 
 //Player Cards Function Below
 
-// socket.on("player_color", (color) => {
-//     my_color = color;
-//     console.log(color);
-//     show_name(color);
-// });
+socket.on("player_color", (color) => {
+    my_color = color;
+    console.log(color);
+    show_name(color);
+});
 
-// socket.on("my_name", { my_name, my_color });
+socket.emit("my_name", my_name);
+
+console.log("my_color", my_color);
 
 
 

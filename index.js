@@ -15,6 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 const current_players = {};
+const ongoing_game = [];
+let no_of_ongoing_games = 0
 
 
 app.get("/", (req, res) => {
@@ -25,52 +27,65 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
     console.log("User Connected", socket.id);
+    socket.on("my_name", (name) => {
 
-    if (!current_players.red) {
-        current_players.red = socket.id;
-        socket.emit("player_color", "red");
+        if (!current_players.red) {
+            current_players.red = socket.id;
+            current_players.red_name = socket.id;
+            console.log("red");
+            socket.join("Game_room");
+            socket.join(`red_player`);
+            socket.emit("player_color", "red");
+        }
+        else if (!current_players.green) {
+            current_players.green = socket.id;
+            current_players.green_name = socket.id;
+            console.log("green");
+            socket.join("Game_room");
+            socket.join(`green_player`);
+            socket.emit("player_color", "green");
+        }
+        else if (!current_players.yellow) {
+            current_players.yellow = socket.id;
+            current_players.yellow_name = socket.id;
+            console.log("yellow");
+            socket.join("Game_room");
+            socket.join(`yellow_player`);
+            socket.emit("player_color", "yellow");
+        }
+        else if (!current_players.blue) {
+            current_players.blue = socket.id;
+            current_players.game_id = current_players.red;
+            current_players.blue_name = socket.id;
+            console.log("blue");
+            socket.join("Game_room");
+            socket.join(`blue_player`);
+            ongoing_game.push({ ...current_players });
+            console.log("ongoing_game", ongoing_game);
+            console.log("current_players", current_players);
+            socket.emit("player_color", "blue");
+            ongoing_game++;
+            Start_Game();
+        }
+    })
+    socket.on("join_room", (my_color) => {
+        socket.join("Game_room");
+        socket.join(`${my_color}_player`);
+    });
+
+    async function Start_Game() {
+        const player_order = ["red", "green", "yellow", "blue"];
+        for (let j = 0; ; j++) {
+            for (let i = 0; i < 4; i++) {
+                await socket.to(`${player_order[i]}_player`).emit("Roll_dice");
+                await socket.on("Dice_value", (dice_value) => {
+                    console.log(dice_value);
+                });
+                socket.to("Game_room").broadcast("Dice_value", dice_value);
+            }
+        }
     }
-    else if (!current_players.green) {
-        current_players.green = socket.id;
-        socket.emit("player_color", "green");
-    }
-    else if (!current_players.yellow) {
-        current_players.yellow = socket.id;
-        socket.emit("player_color", "yellow");
-    }
-    else if (!current_players.blue) {
-        current_players.blue = socket.id;
-        socket.emit("player_color", "blue");
-        // io.sockets.emit("broadcast", {blue : });
-    }
-    // else {
-    //     // socket.emit("player_color", "none");
-    // }
-    // console.log(current_players);
 
-    // socket.on("my_name", (my_name, my_color) = {
-
-
-    // })
-
-
-
-    // socket.on("disconnect", () => {
-    //     if (socket.id === current_players.red) {
-    //         delete current_players.red;
-    //     }
-    //     else if (socket.id === current_players.green) {
-    //         delete current_players.green;
-    //     }
-    //     else if (socket.id === current_players.yellow) {
-    //         delete current_players.yellow;
-    //     }
-    //     else if (socket.id === current_players.blue) {
-    //         delete current_players.blue;
-    //     }
-
-    // })
-    // console.log(current_players);
 })
 
 server.listen(80, () => {

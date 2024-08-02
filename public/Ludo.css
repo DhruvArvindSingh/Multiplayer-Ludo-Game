@@ -316,6 +316,7 @@ body {
 
 .random_btn {
     border-radius: 50px;
+    cursor: pointer;
     width: 35%;
     height: 40%;
     border: 5px solid rgb(130, 2, 2);
@@ -390,10 +391,10 @@ body {
 }
 
 .rotating-border {
-    --border-radius: 1rem;
-    --border-size: 0.5rem;
+    --border-radius: 100px;
+    --border-size: 1px;
     --border-bg: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
-    --padding: 1rem;
+    --padding: 1px;
 
     position: relative;
     overflow: hidden;
@@ -493,4 +494,25 @@ body {
     width: 2.5rem;
     height: 2.5rem;
     text-align: center;
+}
+
+/* Big-small animation */
+
+.big-small_animation {
+    animation: big-small 1s infinite;
+}
+
+@keyframes big-small {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.4);
+    }
+
 }

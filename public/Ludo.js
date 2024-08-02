@@ -1,8 +1,9 @@
 let player_color = ["blue", "yellow", "green", "red"];
 let working = false;
 let dice = null;
+let other_p_dice = null;
 let my_color = null;
-let my_name = prompt("Please enter your name: ");
+let my_name = 1;
 const socket = io();
 Create_board();
 function Create_board() {
@@ -171,9 +172,11 @@ function move(value, piece, death) {
     }
     else {
         console.log((piece.parentNode.getAttribute("data-pos")));
+        socket.emit("moved_piece", piece.parentNode.getAttribute("data-pos"));
         if (piece.parentNode.getAttribute("data-pos").endsWith("locked")) {
             if (value == 6) {
                 move_by_one(piece, 0);
+
             }
             else {
                 return;
@@ -199,6 +202,7 @@ function move(value, piece, death) {
             }, 200);
         }
     }
+
     working == false;
     value == null;    // }
 
@@ -210,7 +214,7 @@ function move_by_one(piece, death) {
     let current_pos_address = piece.parentNode.getAttribute("data-pos");
     let color = piece.getAttribute("data-color");
     let next_pos_address = current_pos.getAttribute("data-next");
-    if ((current_pos_address == "0,11" && color == "blue") || (current_pos_address == "1,6" && color == "yellow") || (current_pos_address == "2,6" && color == "green") || (current_pos_address == "3,11" && color == "red")) {
+    if ((current_pos_address == "0,11" && color == "blue") || (current_pos_address == "1,6" && color == "yellow") || (current_pos_address == "2,6" && color == "green") || (current_pos_address == "3,11" && (color == "red"))) {
         if (current_pos_address == "0,11" && color == "blue") {
             next_pos = document.getElementById("0,10");
         }
@@ -220,7 +224,7 @@ function move_by_one(piece, death) {
         else if (current_pos_address == "2,6" && color == "green") {
             next_pos = document.getElementById("2,7");
         }
-        else if (current_pos_address == "3,11" && color == "red") {
+        else if (current_pos_address == "3,11" && (color == "red")) {
             next_pos = document.getElementById("3,10");
         }
     }
@@ -268,29 +272,49 @@ function pause(time) {
     let old_time = new Date;
     while ((new Date) - old_time <= time) { }
 }
-function allow_move(color) {
-    for (let i = 0; i < 4; i++) {
-        piece = document.getElementById(`${color}_${i}`);
-        piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${i})`);
-        if(color == my_color){
-            piece.classList.add("rotating-border", "rotating-border--black-white", "rotating-border--reverse");
-        }
-    }
+// function allow_move(color) {
 
-}
+
+// }
 
 function show_dice_value(color) {
+    console.log(color);
     let value = Math.floor(Math.random() * 6) + 1;
-    let display = document.getElementById(`${color}_dice_value`);
+    let display = document.getElementById(`${color}_random_num`);
+    console.log("display", display);
+    let btn = document.getElementById(`${color}_random_btn`);
+    let player_box = document.getElementById(`${color}_details`);
     dice = value;
-    display.innerText = value;
-    piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${j})`);
+    display.innerText = `${value}`;
+    btn.removeAttribute("onclick");
+    btn.classList.remove("blink_animation");
+    player_box.classList.remove("blink_animation");
+    // piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${j})`);
     socket.emit("dice_value", value);
-    allow_move(color);
+    // allow_move(color);
+}
+function remove_dice_value(color) {
+    let p_color;
+    if (color == "red") {
+        p_color = "blue";
+    }
+    else if (color == "green") {
+        p_color = "red";
+    }
+    else if (color == "yellow") {
+        p_color = "green";
+    }
+    else if (color == "blue") {
+        p_color = "yellow";
+    }
+    let display = document.getElementById(`${p_color}_random_num`);
+    display.innerHTML = "";
 }
 
 
 //Player Cards Function Below
+
+socket.emit("my_name", my_name);
 
 socket.on("player_color", (color) => {
     my_color = color;
@@ -298,30 +322,65 @@ socket.on("player_color", (color) => {
     // show_name(color);
 });
 
-socket.emit("my_name", my_name);
-
 console.log("my_color", my_color);
 
 socket.on("draw_dice", (color) => {
-    let btn = document.getElementById(`${color}_random_btn`);
-    let player_box = document.getElementById(`${color}_details`);
+    if ((color == "red") || (color == "blue") || (color == "green") || (color == "yellow")) {
+        remove_dice_value(color);
+    }
+    console.log("draw_dice", color);
     if (color == my_color) {
+        let btn = document.getElementById(`${color}_random_btn`);
+        let player_box = document.getElementById(`${color}_details`);
+        // if (color == my_color) {
         btn.classList.add("blink_animation");
-        player_box.classList.add("blink_animation");
-        btn.setAttribute("onclick", `show_dice_value(${color})`);
-    }
-    else {
-        btn.classList.add("border_animation");
-        player_box.classList.add("border_animation");
-    }
+        // player_box.classList.add("blink_animation");
+        btn.setAttribute("onclick", `show_dice_value("${color}")`);
+        // }
+        // else {
+        //     btn.classList.add("border_animation");
+        //     player_box.classList.add("border_animation");
+        // }
 
-    console.log("draw dice");
+        // console.log("draw dice");
+    }
 
 
 })
-socket.on("allow_move", () => {
-    console.log("allow_move");
-    socket.emit("moved_piece", "(1,2)");
+socket.on("allow_move", (color) => {
+    console.log("allow_move : color ", color);
+    let locket_p = 0;
+    for (let i = 1; i <= 4; i++) {
+        piece = document.getElementById(`${color}_${i}`);
+        if (locket_p == 4) {
+            socket.emit("moved_piece", "All locked");
+            return;
+        }
+
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        piece = document.getElementById(`${color}_${i}`);
+        // piece.style.border = "none";
+        if (piece.parentNode.getAttribute("data-pos").endsWith("locked")) {
+            locket_p++;
+        }
+        piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${i})`);
+        // if(piece.parentNode.getAttribute("data-pos") == ){};
+        if (color == my_color) {
+            piece.classList.add("big-small_animation");
+        }
+    }
+    // socket.emit("moved_piece", "(1,2)");
+})
+socket.on("current_dice_value", (value) => {
+    let p_color = value.split("_")[0], p_value = value.slice(value.indexOf("_") + 1);
+    console.log(p_color, " : ", p_value);
+    let dicee = document.getElementById(`${p_color}_random_num`);
+    dicee.innerText = p_value;
+    other_p_dice = p_value;
+    console.log("current_dice_value");
+    // allow_move(p_color);
 })
 
 

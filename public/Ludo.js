@@ -1,6 +1,6 @@
 let player_color = ["blue", "yellow", "green", "red"];
 let working = false;
-let dice = 6;
+let dice = null;
 let my_color = null;
 let my_name = prompt("Please enter your name: ");
 const socket = io();
@@ -8,8 +8,6 @@ Create_board();
 function Create_board() {
     console.log("Yo");
     for (let i = 0; i < 4; i++) {
-
-
         let k = 4, l = 1;
         let middle_path = document.getElementById(`middle_path_${i + 1}`);
         for (let j = 0; j < 18; j++) {
@@ -154,7 +152,7 @@ function put_all_pieces() {
             piece.setAttribute("data-color", `${player_color[i]}`);
             piece.setAttribute("id", `${player_color[i]}_${j}`);
             piece.setAttribute("class", `piece ${player_color[i]}_piece`);
-            piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${j})`);
+
             //             piece.setAttribute("onclick", `setInterval(() => {
             //     console.log("yo");
             //     move(1, ${player_color[i]}_${j});
@@ -270,6 +268,26 @@ function pause(time) {
     let old_time = new Date;
     while ((new Date) - old_time <= time) { }
 }
+function allow_move(color) {
+    for (let i = 0; i < 4; i++) {
+        piece = document.getElementById(`${color}_${i}`);
+        piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${i})`);
+        if(color == my_color){
+            piece.classList.add("rotating-border", "rotating-border--black-white", "rotating-border--reverse");
+        }
+    }
+
+}
+
+function show_dice_value(color) {
+    let value = Math.floor(Math.random() * 6) + 1;
+    let display = document.getElementById(`${color}_dice_value`);
+    dice = value;
+    display.innerText = value;
+    piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${j})`);
+    socket.emit("dice_value", value);
+    allow_move(color);
+}
 
 
 //Player Cards Function Below
@@ -277,12 +295,34 @@ function pause(time) {
 socket.on("player_color", (color) => {
     my_color = color;
     console.log(color);
-    show_name(color);
+    // show_name(color);
 });
 
 socket.emit("my_name", my_name);
 
 console.log("my_color", my_color);
+
+socket.on("draw_dice", (color) => {
+    let btn = document.getElementById(`${color}_random_btn`);
+    let player_box = document.getElementById(`${color}_details`);
+    if (color == my_color) {
+        btn.classList.add("blink_animation");
+        player_box.classList.add("blink_animation");
+        btn.setAttribute("onclick", `show_dice_value(${color})`);
+    }
+    else {
+        btn.classList.add("border_animation");
+        player_box.classList.add("border_animation");
+    }
+
+    console.log("draw dice");
+
+
+})
+socket.on("allow_move", () => {
+    console.log("allow_move");
+    socket.emit("moved_piece", "(1,2)");
+})
 
 
 

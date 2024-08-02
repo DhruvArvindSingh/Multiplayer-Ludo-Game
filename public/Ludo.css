@@ -283,7 +283,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family:cursive;
+    font-family: cursive;
 }
 
 .player_dice {
@@ -307,6 +307,10 @@ body {
     background-color: aquamarine;
     border-radius: 30px;
     border: 5px solid green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -321,4 +325,172 @@ body {
     align-items: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 
+}
+
+.blink_animation {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.border_animation {
+    outline-width: 1px;
+    outline-offset: 0;
+    outline-color: rgba(14, 15, 15, 0.75);
+    outline-style: solid;
+    animation: animateOutline 1s ease infinite;
+}
+
+@keyframes animateOutline {
+    0% {
+        outline-width: 1px;
+        outline-offset: 0;
+        outline-color: rgba(0, 130, 206, 0);
+    }
+
+    10% {
+        outline-color: rgba(0, 130, 206, 0.75);
+    }
+
+    /* The animation finishes at 50% */
+    50% {
+        outline-width: 7px;
+        outline-offset: 4px;
+        outline-color: rgba(0, 130, 206, 0);
+    }
+
+    100% {
+        outline-width: 7px;
+        outline-offset: 4px;
+        outline-color: rgba(102, 102, 102, 0);
+    }
+}
+
+/* //Rotating Border animation  */
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.rotating-border {
+    --border-radius: 1rem;
+    --border-size: 0.5rem;
+    --border-bg: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+    --padding: 1rem;
+
+    position: relative;
+    overflow: hidden;
+    font-size: 2rem;
+    padding: calc(var(--padding) + var(--border-size));
+    border-radius: var(--border-radius);
+    display: inline-block;
+
+    &::before {
+        content: '';
+        display: block;
+        background: var(--border-bg);
+        width: calc(100% * 1.41421356237);
+        padding-bottom: calc(100% * 1.41421356237);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 100%;
+        z-index: -2;
+        animation: spin 5s linear infinite;
+    }
+
+    &--reverse::before {
+        animation-direction: reverse;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: var(--border-size);
+        background: white;
+        z-index: -1;
+        border-radius: calc(var(--border-radius) - var(--border-size));
+    }
+}
+
+/* ---------- End .rotating-border ---------- */
+
+/* ---------- Begin customizing .rotating-border ---------- */
+.rotating-border--google {
+    --border-radius: 0.5rem;
+    --border-size: 0.25rem;
+    --border-bg: conic-gradient(#ea4335 0.0turn 0.125turn,
+            #4285f4 0.125turn 0.25turn,
+            #fbbc05 0.25turn 0.375turn,
+            #34a853 0.375turn 0.5turn,
+            #ea4335 0.5turn 0.625turn,
+            #4285f4 0.625turn 0.75turn,
+            #fbbc05 0.75turn 0.875turn,
+            #34a853 0.875turn 1.0turn);
+
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 2;
+}
+
+.rotating-border--rainbow {
+    --border-radius: 1.5rem;
+    --border-size: 0.5rem;
+    --border-bg: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+}
+
+.rotating-border--black-white {
+    --border-radius: 100%;
+    --border-size: 0.6rem;
+    --border-bg: conic-gradient(#fff 0.00turn 0.05turn,
+            #333 0.05turn 0.10turn,
+            #fff 0.10turn 0.15turn,
+            #333 0.15turn 0.20turn,
+            #fff 0.20turn 0.25turn,
+            #333 0.25turn 0.30turn,
+            #fff 0.30turn 0.35turn,
+            #333 0.35turn 0.40turn,
+            #fff 0.40turn 0.45turn,
+            #333 0.45turn 0.50turn,
+            #fff 0.50turn 0.55turn,
+            #333 0.55turn 0.60turn,
+            #fff 0.60turn 0.65turn,
+            #333 0.65turn 0.70turn,
+            #fff 0.70turn 0.75turn,
+            #333 0.75turn 0.80turn,
+            #fff 0.80turn 0.85turn,
+            #333 0.85turn 0.90turn,
+            #fff 0.90turn 0.95turn,
+            #333 0.95turn 1.00turn);
+}
+
+.rotating-border--black-yellow {
+    --border-radius: 100%;
+    --border-bg: conic-gradient(#F0C400 0.1666turn,
+            #444 0.1666turn 0.3333turn,
+            #F0C400 0.3333turn 0.5turn,
+            #444 0.5turn 0.6666turn,
+            #F0C400 0.6666turn 0.8333turn,
+            #444 0.8333turn);
+    width: 2.5rem;
+    height: 2.5rem;
+    text-align: center;
 }

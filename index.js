@@ -24,67 +24,93 @@ app.get("/", (req, res) => {
         title: "First User"
     });
 })
-
+let current_no = 0;
 io.on("connection", (socket) => {
     console.log("User Connected", socket.id);
     socket.on("my_name", (name) => {
 
         if (!current_players.red) {
             current_players.red = socket.id;
-            current_players.red_name = socket.id;
+            current_players.red_name = name;
             console.log("red");
             socket.join("Game_room");
-            socket.join(`red_player`);
+            // socket.join(`red_player`);
             socket.emit("player_color", "red");
         }
         else if (!current_players.green) {
             current_players.green = socket.id;
-            current_players.green_name = socket.id;
+            current_players.green_name = name;
             console.log("green");
             socket.join("Game_room");
-            socket.join(`green_player`);
+            // socket.join(`green_player`);
             socket.emit("player_color", "green");
         }
         else if (!current_players.yellow) {
             current_players.yellow = socket.id;
-            current_players.yellow_name = socket.id;
+            current_players.yellow_name = name;
             console.log("yellow");
             socket.join("Game_room");
-            socket.join(`yellow_player`);
+            // socket.join(`yellow_player`);
             socket.emit("player_color", "yellow");
         }
         else if (!current_players.blue) {
             current_players.blue = socket.id;
             current_players.game_id = current_players.red;
-            current_players.blue_name = socket.id;
+            current_players.blue_name = name;
             console.log("blue");
             socket.join("Game_room");
-            socket.join(`blue_player`);
+            // socket.join(`blue_player`);
             ongoing_game.push({ ...current_players });
             console.log("ongoing_game", ongoing_game);
             console.log("current_players", current_players);
             socket.emit("player_color", "blue");
-            ongoing_game++;
+            // ongoing_game++;
             Start_Game();
         }
     })
-    socket.on("join_room", (my_color) => {
-        socket.join("Game_room");
-        socket.join(`${my_color}_player`);
-    });
+    // socket.on("join_room", (my_color) => {
+    //     socket.join("Game_room");
+    //     socket.join(`${my_color}_player`);
+    // });
 
-    async function Start_Game() {
-        const player_order = ["red", "green", "yellow", "blue"];
-        for (let j = 0; ; j++) {
-            for (let i = 0; i < 4; i++) {
-                await socket.to(`${player_order[i]}_player`).emit("Roll_dice");
-                await socket.on("Dice_value", (dice_value) => {
-                    console.log(dice_value);
-                });
-                socket.to("Game_room").broadcast("Dice_value", dice_value);
-            }
-        }
+    const player_order = ["red", "green", "yellow", "blue"];
+    function Start_Game() {
+        console.log("Start_game")
+
+        draw_dice("red")
     }
+    function draw_dice(current_color) {
+        // console.log("Draw_dice")
+        io.to(current_players[`${current_color}`]).emit('draw_dice');
+
+    }
+    socket.on("dice_value", async (dice_value) => {
+        console.log("Draw_dice")
+        let value = dice_value;
+        console.log("value: ", value);
+        console.log("dice_value: ", dice_value);
+        allow_move(`${player_order[current_no]}`);
+    })
+    function allow_move(current_color) {
+        console.log(current_players[`${player_order[current_no]}`])
+        // io.to[current_players[`${player_order[current_no]}`]].emit('allow_move');
+        io.to(current_players[`${current_color}`]).emit('allow_move');
+    }
+    socket.on("moved_piece", (loc) => {
+        console.log("loc: ", loc);
+        let current_color;
+        if (current_no == 3) {
+            current_no = 0;
+            current_color = player_order[0]
+            draw_dice(`${player_order[current_no]}`);
+        }
+        else {
+            current_no++;
+            current_color = player_order[current_no];
+            draw_dice(`${player_order[current_no]}`);
+            // draw_dice(player_order[`${current_no}`]);
+        }
+    })
 
 })
 

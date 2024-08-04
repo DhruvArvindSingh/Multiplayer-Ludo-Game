@@ -22,7 +22,7 @@ function Create_board() {
             square.setAttribute("data-next", `${get_next_pos(i, j)}`);
             if (safe_satus(i, j)) { square.setAttribute("data-safe", `${safe_satus(i, j)}`) };
             if (colored_square(i, j)) { square.setAttribute("class", `square ${colored_square(i, j)}_square`) };
-            // square.innerHTML = `(${i},${j})`
+            square.innerHTML = `(${i},${j})`
             middle_path.appendChild(square);
             let nxt_pos = get_next_pos(i, j);
 
@@ -181,6 +181,10 @@ function update_board(status) {
         pos.appendChild(piece);
     }
 }
+function show_name(color, name) {
+    let display = document.getElementById(`${color}_player_name`);
+    display.innerHTML = name;
+}
 
 
 //Move Functions Below
@@ -195,6 +199,7 @@ function move(value, piece) {
         if (piece.parentNode.getAttribute("data-pos").endsWith("locked")) {
             if (value == 6) {
                 move_by_one(piece, 0);
+                // socket.emit("extra chance for 6");
 
             }
             else {
@@ -378,6 +383,16 @@ socket.on("player_color", (color) => {
 });
 
 console.log("my_color", my_color);
+
+socket.on("player_names", (all_names) => {
+    names = all_names.split(" ");
+    for (let i = 0; i <= names.length - 2; i++) {
+        p_color = names[i].split("-")[0];
+        p_name = names[i].split("-")[1];
+        console.log(`p_color = ${p_color} p_name = ${p_name}`);
+        show_name(p_color, p_name);
+    }
+})
 
 socket.on("draw_dice", (color) => {
     clear_all_dice_value();

@@ -125,15 +125,25 @@ io.on("connection", (socket) => {
         console.log("status of board : ", status);
         io.except(socket.id).emit("status of board", status);
     })
-    socket.on("status of board", (status) => {
-        console.log("status of board : ", status);
-        io.except(socket.id).emit("current board status", status);
-    })
+    // socket.on("status of board", (status) => {
+    //     console.log("status of board : ", status);
+    //     io.except(socket.id).emit("current board status", status);
+    // })
 
     function Start_Game() {
         console.log("Start_game")
+        send_player_name();
         draw_dice(`${player_order[current_no]}`);
     }
+    function send_player_name() {
+        let names = "";
+        for (let i = 0; i < 4; i++) {
+            let player_name = current_players[`${player_order[i]}_name`];
+            names = names + `${player_order[i]}-${player_name} `;
+        }
+        io.emit("player_names", names);
+    }
+
     function draw_dice(current_color) {
         console.log("Draw_dice : color : ", current_color);
         io.to(current_players[`${current_color}`]).emit('draw_dice', current_color);

@@ -123,7 +123,12 @@ io.on("connection", (socket) => {
     })
     socket.on("status of board", (status) => {
         console.log("status of board : ", status);
-        io.except(socket.id).emit("status of board", status);
+        io.except(socket.id).emit("current board status", status);
+    })
+    socket.on("extra chance for 6", (color)=>{
+        console.log("extra chance for 6 : ", color);
+        socket.emit("draw_dice", color);
+
     })
     // socket.on("status of board", (status) => {
     //     console.log("status of board : ", status);

@@ -22,7 +22,7 @@ function Create_board() {
             square.setAttribute("data-next", `${get_next_pos(i, j)}`);
             if (safe_satus(i, j)) { square.setAttribute("data-safe", `${safe_satus(i, j)}`) };
             if (colored_square(i, j)) { square.setAttribute("class", `square ${colored_square(i, j)}_square`) };
-            square.innerHTML = `(${i},${j})`
+            // square.innerHTML = `(${i},${j})`
             middle_path.appendChild(square);
             let nxt_pos = get_next_pos(i, j);
 
@@ -170,9 +170,9 @@ function update_board(status) {
     let piece_data = status.split(" ");
     console.log("update board : ", piece_data);
     console.log("pos length: ", piece_data.length);
-    for (let i = 0; i < piece_data.length - 2; i++) {
+    for (let i = 0; i <= piece_data.length - 2; i++) {
         // console.log(pos[i]);
-        console.log(piece_data[`${i}`]);
+        console.log(piece_data[`${i}`] , `${i}`);
         let piece_address = piece_data[`${i}`].split("-")[0];
         let pos_address = piece_data[`${i}`].split("-")[1];
         console.log(`piece : ${piece_address}, pos : ${pos_address}`);
@@ -199,8 +199,9 @@ function move(value, piece) {
         if (piece.parentNode.getAttribute("data-pos").endsWith("locked")) {
             if (value == 6) {
                 move_by_one(piece, 0);
-                // socket.emit("extra chance for 6");
-
+                send_status_of_board();
+                socket.emit("extra chance for 6", my_color);
+                return;
             }
             else {
                 return;
@@ -216,6 +217,10 @@ function move(value, piece) {
                 } else {
                     if (i == 1) {
                         move_by_one(piece, true);
+                        remove_piece_animation(my_color);
+                        send_status_of_board();
+                        socket.emit("next_turn", my_color);
+
                     }
                     else {
                         move_by_one(piece, false);
@@ -293,12 +298,16 @@ function move_by_one(piece, death) {
     else {
         next_pos.appendChild(piece);
     }
-    let status_of_board = get_status_of_board();
-    console.log("status_of_board : ", status_of_board);
-    socket.emit("status of board", status_of_board);
+    send_status_of_board();
+
 
 }
 
+function send_status_of_board() {
+    let status_of_board = get_status_of_board();
+    console.log("status_of_board : ", status_of_board);
+    socket.emit("status of board", status_of_board);
+}
 function pause(time) {
     let old_time = new Date;
     while ((new Date) - old_time <= time) { }
@@ -361,6 +370,13 @@ function add_blink_animation(box) {
 function remove_blink_animation(box) {
     console.log("remove_blink_animation");
     box.classList.remove("blink_animation");
+}
+function remove_piece_animation(color) {
+    console.log("remove_piece_animation");
+    for (let i = 1; i <= 4; i++) {
+        let piece = document.getElementById(`${color}_${i}`);
+        piece.classList.remove("big-small_animation");
+    }
 }
 function check_for_locked_pieces() {
     let ans = 0;

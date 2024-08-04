@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new socket_io.Server(server);
 const player_order = ["red", "green", "yellow", "blue"];
-
+// import { Start_Game, draw_dice, allow_move } from "./routes/Board_func.js";
 //below line actually lets us use ejs file for views folder
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -75,29 +75,16 @@ io.on("connection", (socket) => {
     // });
 
     const player_order = ["red", "green", "yellow", "blue"];
-    function Start_Game() {
-        console.log("Start_game")
 
-        draw_dice("red")
-    }
-    function draw_dice(current_color) {
-        console.log("Draw_dice")
-        io.to(current_players[`${current_color}`]).emit('draw_dice', current_color);
-
-    }
     socket.on("dice_value", async (dice_value) => {
-        console.log("Draw_dice");
+        // console.log("Draw_dice");
         let value = dice_value;
-        console.log("value: ", value);
-        console.log("dice_value: ", dice_value);
+        console.log("dice_value recieved: ", value);
         io.except(socket.id).emit("current_dice_value", `${player_order[current_no]}_${value}`);
+        // check_for_locked_pieces();
         allow_move(`${player_order[current_no]}`);
     })
-    function allow_move(current_color) {
-        console.log(current_players[`${player_order[current_no]}`])
-        // io.to[current_players[`${player_order[current_no]}`]].emit('allow_move');
-        io.to(current_players[`${current_color}`]).emit('allow_move', `${player_order[current_no]}`);
-    }
+
     socket.on("moved_piece", (loc) => {
         if (loc == "All locked") {
             if (current_no == 3) {
@@ -122,6 +109,43 @@ io.on("connection", (socket) => {
             // draw_dice(player_order[`${current_no}`]);
         }
     })
+
+    socket.on("next_turn", (color) => {
+        console.log("next_turn received : color = ", color);
+        current_no = player_order.indexOf(color) + 1;
+        console.log(`current_no = ${current_no}, player_order[current_no] = ${player_order[current_no]}`);
+        if (current_no == 4) {
+            console.log("current_no = 3");
+            current_no = 0;
+            console.log("current_no = ", current_no);
+        }
+        draw_dice(`${player_order[current_no]}`);
+    })
+    socket.on("status of board", (status) => {
+        console.log("status of board : ", status);
+        io.except(socket.id).emit("status of board", status);
+    })
+    socket.on("status of board", (status) => {
+        console.log("status of board : ", status);
+        io.except(socket.id).emit("current board status", status);
+    })
+
+    function Start_Game() {
+        console.log("Start_game")
+        draw_dice(`${player_order[current_no]}`);
+    }
+    function draw_dice(current_color) {
+        console.log("Draw_dice : color : ", current_color);
+        io.to(current_players[`${current_color}`]).emit('draw_dice', current_color);
+        io.except(current_players[`${current_color}`]).emit("current_players_color", current_color);
+
+    }
+    function allow_move(current_color) {
+        console.log("allow_move run : ", current_color);
+        console.log(current_players[`${player_order[current_no]}`])
+        // io.to[current_players[`${player_order[current_no]}`]].emit('allow_move');
+        io.to(current_players[`${current_color}`]).emit('allow_move', `${player_order[current_no]}`);
+    }
 
 
 })

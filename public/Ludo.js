@@ -4,7 +4,7 @@ let working = false;
 let dice = null;
 let other_p_dice = null;
 let my_color = null;
-let my_name = 1;
+let my_name = prompt("Enter Your Name: ");
 let current_players_color = null;
 let current_dice_value = null;
 const socket = io();
@@ -172,7 +172,7 @@ function update_board(status) {
     console.log("pos length: ", piece_data.length);
     for (let i = 0; i <= piece_data.length - 2; i++) {
         // console.log(pos[i]);
-        console.log(piece_data[`${i}`] , `${i}`);
+        console.log(piece_data[`${i}`], `${i}`);
         let piece_address = piece_data[`${i}`].split("-")[0];
         let pos_address = piece_data[`${i}`].split("-")[1];
         console.log(`piece : ${piece_address}, pos : ${pos_address}`);
@@ -200,7 +200,9 @@ function move(value, piece) {
             if (value == 6) {
                 move_by_one(piece, 0);
                 send_status_of_board();
-                socket.emit("extra chance for 6", my_color);
+                remove_piece_animation(my_color);
+                dice = null;
+                socket.emit("extra chance for 6,death or home", my_color);
                 return;
             }
             else {
@@ -219,7 +221,16 @@ function move(value, piece) {
                         move_by_one(piece, true);
                         remove_piece_animation(my_color);
                         send_status_of_board();
-                        socket.emit("next_turn", my_color);
+                        if (value == 6) {
+                            socket.emit("extra chance for 6,death or home", my_color);
+                            dice = null;
+                            console.log("if");
+                        }
+                        else {
+                            console.log("else");
+                            socket.emit("next_turn", my_color);
+                            dice = null;
+                        }
 
                     }
                     else {
@@ -247,6 +258,9 @@ function move_by_one(piece, death) {
     let current_pos_address = piece.parentNode.getAttribute("data-pos");
     let color = piece.getAttribute("data-color");
     let next_pos_address = current_pos.getAttribute("data-next");
+    if ((next_pos_address == "1,11") || (next_pos_address == "0,6") || (next_pos_address == "2,11") || (next_pos_address == "3,6")) {
+        if (next_pos_address) { }
+    }
     if ((current_pos_address == "0,11" && color == "blue") || (current_pos_address == "1,6" && color == "yellow") || (current_pos_address == "2,6" && color == "green") || (current_pos_address == "3,11" && (color == "red"))) {
         if (current_pos_address == "0,11" && color == "blue") {
             next_pos = document.getElementById("0,10");
@@ -288,6 +302,8 @@ function move_by_one(piece, death) {
                         locked_pos.appendChild(dead_piece);
                         // if (!next_pos.hasChildNodes) { break; }
                     }
+                    remove_piece_animation(my_color);
+                    socket.emit("extra chance for 6,death or home", my_color);
                 }
                 console.log("append");
                 next_pos.appendChild(piece);
@@ -305,7 +321,7 @@ function move_by_one(piece, death) {
 
 function send_status_of_board() {
     let status_of_board = get_status_of_board();
-    console.log("status_of_board : ", status_of_board);
+    // console.log("status_of_board : ", status_of_board);
     socket.emit("status of board", status_of_board);
 }
 function pause(time) {
@@ -322,7 +338,7 @@ function get_status_of_board() {
 
         }
     }
-    console.log("status : ", status);
+    // console.log("status : ", status);
     return status;
 }
 function show_dice_value(color) {
@@ -334,6 +350,21 @@ function show_dice_value(color) {
     dice = value;
     display.innerText = `${value}`;
     btn.removeAttribute("onclick");
+    let no = null;
+    switch (color) {
+        case "red": no = 4;
+            break;
+        case "green": no = 3;
+            break;
+        case "yellow": no = 2;
+            break;
+        case "blue": no = 1;
+            break;
+        default: no = null;
+            break;
+    }
+    let player_area_color = document.getElementById(`player_container_${no}`)
+    remove_background_animation(player_area_color);
     remove_blink_animation(btn);
     remove_blink_animation(display);
     // piece.setAttribute("onclick", `move(${dice},${player_color[i]}_${j})`);
@@ -367,16 +398,24 @@ function add_blink_animation(box) {
     console.log("add_blink_animation");
     box.classList.add("blink_animation");
 }
+function add_background_animation(box) {
+    console.log("add_background_animation");
+    box.classList.add("background_animation");
+}
 function remove_blink_animation(box) {
     console.log("remove_blink_animation");
     box.classList.remove("blink_animation");
 }
 function remove_piece_animation(color) {
-    console.log("remove_piece_animation");
+    console.log("remove_piece_animation, color =", color);
     for (let i = 1; i <= 4; i++) {
         let piece = document.getElementById(`${color}_${i}`);
         piece.classList.remove("big-small_animation");
     }
+}
+function remove_background_animation(box) {
+    console.log("remove_background_animation");
+    box.classList.remove("background_animation");
 }
 function check_for_locked_pieces() {
     let ans = 0;
@@ -414,10 +453,25 @@ socket.on("draw_dice", (color) => {
     clear_all_dice_value();
     console.log("draw_dice color: ", color);
     if (color == my_color) {
+        let no = null;
         let btn = document.getElementById(`${color}_random_btn`);
         let display = document.getElementById(`${color}_random_num`);
+        switch (color) {
+            case "red": no = 4;
+                break;
+            case "green": no = 3;
+                break;
+            case "yellow": no = 2;
+                break;
+            case "blue": no = 1;
+                break;
+            default: no = null;
+                break;
+        }
+        let player_area_color = document.getElementById(`player_container_${no}`)
         // if (color == my_color) {
         add_blink_animation(btn);
+        add_background_animation(player_area_color);
         add_blink_animation(display);
         // player_box.classList.add("blink_animation");
         btn.setAttribute("onclick", `show_dice_value("${color}")`);
@@ -447,7 +501,7 @@ socket.on("allow_move", (color) => {
             // if (piece.parentNode.getAttribute("data-pos").endsWith("locked")) {
             //     locket_p++;
             // }
-            piece.setAttribute("onclick", `move(${dice},${color}_${i})`);
+            piece.setAttribute("onclick", `move(dice,${color}_${i})`);
             // if(piece.parentNode.getAttribute("data-pos") == ){};
             if (color == my_color) {
                 piece.classList.add("big-small_animation");

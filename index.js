@@ -18,12 +18,17 @@ const current_players = {};
 const ongoing_game = [];
 let no_of_ongoing_games = 0
 
-
 app.get("/", (req, res) => {
+    res.render("home", {
+        title: "Home"
+    });
+})
+app.get("/start_game", (req, res) => {
     res.render("Ludo", {
         title: "First User"
     });
 })
+
 let current_no = 0;
 let player_color = player_order[current_no];
 io.on("connection", (socket) => {
@@ -64,6 +69,7 @@ io.on("connection", (socket) => {
             ongoing_game.push({ ...current_players });
             console.log("ongoing_game", ongoing_game);
             console.log("current_players", current_players);
+            // clear_current_players();
             socket.emit("player_color", "blue");
             // ongoing_game++;
             Start_Game();
@@ -122,11 +128,11 @@ io.on("connection", (socket) => {
         draw_dice(`${player_order[current_no]}`);
     })
     socket.on("status of board", (status) => {
-        console.log("status of board : ", status);
+        // console.log("status of board : ", status);
         io.except(socket.id).emit("current board status", status);
     })
-    socket.on("extra chance for 6", (color)=>{
-        console.log("extra chance for 6 : ", color);
+    socket.on("extra chance for 6,death or home", (color) => {
+        console.log("extra chance for 6,death or home : ", color);
         socket.emit("draw_dice", color);
 
     })

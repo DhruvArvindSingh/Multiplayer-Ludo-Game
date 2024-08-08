@@ -1,0 +1,142 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: skyblue;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
+    flex-direction: column;
+    width: screen;
+    font-family: cursive;
+}
+
+.title_div {
+    width: 100%;
+    height: 20vh;
+    /* background-color: orange; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    /* padding-top: 30px; */
+    font-size: 80px;
+}
+
+.main_body {
+    height: 80vh;
+    width: screen;
+    /* background-color: greenyellow; */
+}
+
+.left_div {
+    position: absolute;
+    margin-top: 30px;
+    left: 15px;
+    width: 70px;
+    height: 60%;
+    /* background-color: red; */
+}
+
+.right_div {
+    position: absolute;
+    margin-top: 30px;
+    right: 15px;
+    margin-top: 30px;
+    margin-left: 15px;
+    width: 70px;
+    height: 60%;
+    /* background-color: red; */
+}
+
+.start_btn {
+    position: absolute;
+    bottom: 90px;
+    width: 200px;
+    height: 200px;
+    left: 43%;
+    background-color: blue;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+}
+
+
+/* Play button */
+
+
+.container {
+    position: absolute;
+}
+
+input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+label {
+    display: grid;
+    border: none;
+    background-color: #3b29cc;
+    --w: 200px;
+    width: var(--w);
+    height: var(--w);
+    border-radius: 50%;
+    place-items: center;
+    cursor: pointer;
+}
+
+.play_pause_icon {
+    --w: 50%;
+    width: var(--w);
+    height: var(--w);
+    background: white;
+    translate: 0 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.play {
+    clip-path: polygon(20% 0,
+            20% 100%,
+            90% 50%,
+            90% 50%,
+            90% 50%,
+            90% 50%,
+            90% 50%,
+            90% 50%,
+            90% 50%);
+    translate: 6% 0;
+}
+
+.container:has(input:checked) .play_pause_icon,
+.pause {
+    clip-path: polygon(0 0,
+            0 100%,
+            33.33% 100%,
+            33.33% 0,
+            66.66% 0,
+            100% 0,
+            100% 100%,
+            66.66% 100%,
+            66.66% 0);
+    translate: 0 0;
+}
+
+.play-2 {
+    clip-path: polygon(20% 0,
+            20% 100%,
+            35% 90%,
+            35% 90%,
+            35% 90%,
+            90% 50%,
+            35% 10%,
+            35% 10%,
+            35% 10%);
+    translate: 6% 0;
+}

@@ -346,6 +346,27 @@ body {
     }
 }
 
+.background_animation {
+    animation: backgrounds 1s infinite;
+}
+
+@keyframe backgrounds {
+    0% {
+        background-color: white;
+    }
+
+    50% {
+        background-color: green;
+        /* opacity: 0; */
+    }
+
+    100% {
+        background-color: purple;
+        /* opacity: 1; */
+    }
+
+}
+
 .border_animation {
     outline-width: 1px;
     outline-offset: 0;
@@ -507,12 +528,12 @@ body {
         transform: scale(1);
     }
 
-    50% {
+    /* 50% {
         transform: scale(1.2);
-    }
+    } */
 
     100% {
-        transform: scale(1.4);
+        transform: scale(1.2);
     }
 
 }

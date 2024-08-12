@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:900i');
+
 * {
     padding: 0;
     margin: 0;
@@ -11,7 +13,7 @@ body {
     height: 100vh;
     flex-direction: column;
     width: screen;
-    font-family: cursive;
+    font-family: 'Poppins', sans-serif;
 }
 
 .title_div {
@@ -23,10 +25,78 @@ body {
     align-items: center;
 }
 
-.title {
+/* .title {
     /* padding-top: 30px; */
-    font-size: 80px;
-}
+    /* font-size: 80px; */
+/* }  */
+
+
+/* Title css */
+
+ 
+.playful span {
+    position: relative;
+    color: #5362F6;
+    text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
+    animation: scatter 1.75s infinite;
+  }
+  
+  .playful span:nth-child(2n) {
+    color: #ED625C;
+    text-shadow: 0.25px 0.25px #F2A063, 0.5px 0.5px #F2A063, 0.75px 0.75px #F2A063, 1px 1px #F2A063, 1.25px 1.25px #F2A063, 1.5px 1.5px #F2A063;
+    animation-delay: 0.3s;
+  }
+  
+  .playful span:nth-child(3n) {
+    color: #FFD913;
+    text-shadow: 0.25px 0.25px #6EC0A9, 0.5px 0.5px #6EC0A9, 0.75px 0.75px #6EC0A9, 1px 1px #6EC0A9, 1.25px 1.25px #6EC0A9, 1.5px 1.5px #6EC0A9;
+    animation-delay: 0.15s;
+  }
+  
+  .playful span:nth-child(5n) {
+    color: #555BFF;
+    text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
+    animation-delay: 0.4s;
+  }
+  
+  .playful span:nth-child(7n), .playful span:nth-child(11n) {
+    color: #FF9C55;
+    text-shadow: 0.25px 0.25px #FF5555, 0.5px 0.5px #FF5555, 0.75px 0.75px #FF5555, 1px 1px #FF5555, 1.25px 1.25px #FF5555, 1.5px 1.5px #FF5555;
+    animation-delay: 0.25s;
+  }
+  
+  @keyframes scatter {
+    0% {
+      top: 0;
+    }
+    50% {
+      top: -10px;
+    }
+    100% {
+      top: 0;
+    }
+  }
+  
+  h1 {
+    font-size: 150px;
+    text-transform: uppercase;
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-weight: bolder;
+    display: block;
+    width: 666px;
+    max-width: 80vw;
+    min-height: 90px;
+    height: auto;
+    text-align: center;
+    margin: 10rem auto;
+    margin: calc(50vh - 5rem) auto;
+  }
+  
+
+
+    /* MAIN BODY */
+
+
 
 .main_body {
     height: 80vh;
@@ -55,17 +125,34 @@ body {
 }
 
 .start_btn {
-    position: absolute;
-    bottom: 90px;
-    width: 200px;
-    height: 200px;
-    left: 43%;
-    background-color: blue;
-    border-radius: 100px;
+    position: relative;
+    bottom: -230px;
+    width: 100vw;
+    height: 300px;
+    flex-direction: column;
+    /* left: 43px; */
+    /* background-color: blue; */
+    /* border-radius: 100px; */
     display: flex;
+    justify-content: center;
     align-items: center;
 }
 
+.custom_match_btns {
+    width: 100%;
+    height: 100px;
+    /* background-color: white; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.create_btn,
+.join_btn {
+    font-size: 20px;
+    padding: 5px 20px;
+}
 
 /* Play button */
 
@@ -80,63 +167,103 @@ input {
     pointer-events: none;
 }
 
-label {
-    display: grid;
-    border: none;
-    background-color: #3b29cc;
-    --w: 200px;
-    width: var(--w);
-    height: var(--w);
-    border-radius: 50%;
-    place-items: center;
-    cursor: pointer;
+
+/* 
+* {
+    box-sizing: border-box;
+} */
+
+
+.wrapper {
+    display: flex;
+    justify-content: center;
 }
 
-.play_pause_icon {
-    --w: 50%;
-    width: var(--w);
-    height: var(--w);
-    background: white;
-    translate: 0 0;
-    transition: all 0.2s ease-in-out;
+.cta {
+
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    background: #6225E6;
+    transition: 1s;
+    box-shadow: 6px 6px 0 black;
+    transform: skewX(-15deg);
 }
 
-.play {
-    clip-path: polygon(20% 0,
-            20% 100%,
-            90% 50%,
-            90% 50%,
-            90% 50%,
-            90% 50%,
-            90% 50%,
-            90% 50%,
-            90% 50%);
-    translate: 6% 0;
+.play_btn {
+    font-size: 40px;
+    display: flex;
+    padding: 10px 45px;
 }
 
-.container:has(input:checked) .play_pause_icon,
-.pause {
-    clip-path: polygon(0 0,
-            0 100%,
-            33.33% 100%,
-            33.33% 0,
-            66.66% 0,
-            100% 0,
-            100% 100%,
-            66.66% 100%,
-            66.66% 0);
-    translate: 0 0;
+.cta:focus {
+    outline: none;
 }
 
-.play-2 {
-    clip-path: polygon(20% 0,
-            20% 100%,
-            35% 90%,
-            35% 90%,
-            35% 90%,
-            90% 50%,
-            35% 10%,
-            35% 10%,
-            35% 10%);
-    translate: 6% 0;
+.cta:hover {
+    transition: 0.5s;
+    box-shadow: 10px 10px 0 #FBC638;
+}
+
+.cta span:nth-child(2) {
+    transition: 0.5s;
+    margin-right: 0px;
+}
+
+.cta:hover span:nth-child(2) {
+    transition: 0.5s;
+    margin-right: 25px;
+}
+
+span {
+    transform: skewX(15deg)
+}
+
+span:nth-child(2) {
+    width: 20px;
+    margin-left: 30px;
+    position: relative;
+    top: 12%;
+}
+
+/**************SVG****************/
+
+path.one {
+    transition: 0.4s;
+    transform: translateX(-60%);
+}
+
+path.two {
+    transition: 0.5s;
+    transform: translateX(-30%);
+}
+
+.cta:hover path.three {
+    animation: color_anim 1s infinite 0.2s;
+}
+
+.cta:hover path.one {
+    transform: translateX(0%);
+    animation: color_anim 1s infinite 0.6s;
+}
+
+.cta:hover path.two {
+    transform: translateX(0%);
+    animation: color_anim 1s infinite 0.4s;
+}
+
+/* SVG animations */
+
+@keyframes color_anim {
+    0% {
+        fill: white;
+    }
+
+    50% {
+        fill: #FBC638;
+    }
+
+    100% {
+        fill: white;
+    }
 }

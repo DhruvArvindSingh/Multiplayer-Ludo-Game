@@ -6,6 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new socket_io.Server(server);
 const player_order = ["red", "green", "yellow", "blue"];
+const ShortUniqueId = require('short-unique-id');
+const { randomUUID } = new ShortUniqueId({ length: 10 });
 // import { Start_Game, draw_dice, allow_move } from "./routes/Board_func.js";
 //below line actually lets us use ejs file for views folder
 app.set("view engine", "ejs");
@@ -27,6 +29,16 @@ app.get("/start_game", (req, res) => {
     res.render("Ludo", {
         title: "First User"
     });
+})
+app.get("/join", (req, res) => {
+    res.render("Ludo", {
+        title: "First User"
+    });
+})
+app.get("/create", (req, res) => {
+    let game_id = randomUUID();
+    console.log("game_is : ", game_id)
+    res.alert(`Game ID : ${game_id}`);
 })
 
 let current_no = 0;
@@ -92,6 +104,14 @@ io.on("connection", (socket) => {
     // });
 
     const player_order = ["red", "green", "yellow", "blue"];
+    socket.on("create_room", () => {
+        socket.room_id = no_of_ongoing_games + 1;
+        socket.join(`${no_of_ongoing_games + 1}`);
+        console.log("Create room created = ", socket.room_id);
+        no_of_ongoing_games++;
+        console.log("no_of_ongoing_games = ", no_of_ongoing_games);
+        socket.emit("craete_room_id", socket.room_id);
+    })
 
     socket.on("dice_value", async (dice_value) => {
         // console.log("Draw_dice");

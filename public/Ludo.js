@@ -20,8 +20,9 @@ else {
     console.log("my_room_id: ", my_room_id);
     // socket.room_id = my_room_id;
     socket.emit("update socket data", sessionStorage.getItem("id"), sessionStorage.getItem("room_id"), sessionStorage.getItem("name"));
-    socket.emit("check socket.id", sessionStorage.getItem("id"));
-    console.log("socket.id after changes: ", socket.id);
+    // socket.emit("check socket.id", sessionStorage.getItem("id"));
+    custom = true;
+    // console.log("socket.id after changes: ", socket.id);
     my_name = sessionStorage.getItem("name");
 }
 // if (sessionStorage.getItem("room_id") == null) {
@@ -481,6 +482,7 @@ socket.on("player_color", (color) => {
 console.log("my_color", my_color);
 
 socket.on("player_names", (all_names) => {
+    console.log("Players name request received: ", all_names);
     names = all_names.split(" ");
     for (let i = 0; i <= names.length - 2; i++) {
         p_color = names[i].split("-")[0];

@@ -16,9 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 //below line actually lets us use different css and js file for views folder
 app.use(express.static(path.join(__dirname, "public")));
 
-const current_players = {};
-const custom_players = {};
-const ongoing_game = {};
+let check_custom_players = {};
+let current_players = {};
+let custom_players = {};
+let ongoing_game = {};
 let no_of_ongoing_games = 0;
 
 app.get("/", (req, res) => {
@@ -48,8 +49,21 @@ io.on("connection", (socket) => {
     socket.on("update socket data", (id, room_id, name) => {
         console.log("Custom players before update: ", custom_players);
         // console.log("socket data before updated: ", socket);
-        for (let i = 0; i < custom_players[`${room_id}`].length; i++) {
+        for (let i = 0; i < 4; i++) {
+            console.log("custom_players[`${room_id}`][`${player_order[i]}`] = ", custom_players[`${room_id}`][`${player_order[i]}`]);
+            console.log("id = ", id);
+            socket.join(`${room_id}`);
             if (custom_players[`${room_id}`][`${player_order[i]}`] == id) {
+                console.log("if statement worked");
+                let ob = check_custom_players[`${room_id}`];
+                console.log("ob = ", ob);
+                if (ob == undefined) {
+                    check_custom_players[`${room_id}`] = [player_order[i]];
+                }
+                else {
+                    check_custom_players[`${room_id}`] = [...ob, player_order[i]];
+                }
+                console.log("check_custom_players: ", check_custom_players);
                 custom_players[`${room_id}`][`${player_order[i]}`] = socket.id;
                 custom_players[`${room_id}`][`${player_order[i]}_name`] = name;
             }
@@ -58,6 +72,25 @@ io.on("connection", (socket) => {
         socket.name = name;
         // console.log("socket data updated: ", socket.id);
         console.log("Custom players after update: ", custom_players);
+        ob = check_custom_players[`${room_id}`];
+        console.log("ob before check = ", ob);
+        console.log("player_order before check = ", player_order);
+        check_count = 0;
+        for (let i = 0; i < 4; i++) {
+            if (ob.includes(player_order[i])) {
+                console.log("condition satisfied");
+                check_count++;
+            }
+        }
+        console.log("check_count = ", check_count);
+        if (check_count == 4) {
+            console.log("check_custom_players[`${room_id}`] = ", check_custom_players[`${room_id}`]);
+            console.log("player_order = ", player_order);
+            Start_Custom_game(room_id);
+        }
+        else {
+            check_count = 0
+        }
 
     })
     // socket.on("check socket.id", (session_id) => {
@@ -154,30 +187,34 @@ io.on("connection", (socket) => {
                 custom_players[`${room_id}`]["green_name"] = `${socket.name}`;
                 socket.color = "green";
                 socket.host = false;
-                socket.join(`${room_id}`);
+                socket.join(`${room_id}_home`);
                 console.log("socket.room_id: ", socket.room_id);
                 socket.emit("show players", custom_players[`${room_id}`], room_id);
-                io.to(`${room_id}`).emit("player added", custom_players[`${room_id}`]);
+                io.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
             }
             else if (custom_players[`${room_id}`]["yellow"] == undefined) {
                 custom_players[`${room_id}`]["yellow"] = `${socket.id}`;
                 custom_players[`${room_id}`]["yellow_name"] = `${socket.name}`;
                 socket.color = "yellow";
                 socket.host = false;
-                socket.join(`${room_id}`);
+                socket.join(`${room_id}_home`);
                 socket.emit("show players", custom_players[`${room_id}`], room_id);
-                io.to(`${room_id}`).emit("player added", custom_players[`${room_id}`]);
+                io.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
             }
             else if (custom_players[`${room_id}`]["blue"] == undefined) {
                 custom_players[`${room_id}`]["blue"] = `${socket.id}`;
                 custom_players[`${room_id}`]["blue_name"] = `${socket.name}`;
                 socket.color = "blue";
                 socket.host = false;
-                socket.join(`${room_id}`);
+                socket.join(`${room_id}_home`);
                 socket.emit("show players", custom_players[`${room_id}`], room_id);
-                socket.to(`${room_id}`).emit("player added", custom_players[`${room_id}`]);
-                io.to(`${room_id}`).emit("copy id to local storage");
-                io.to(`${room_id}`).emit("Start custom game");
+                socket.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
+                // for (let i = 0; i < 4; i++) {
+
+                // }
+                io.to(`${room_id}_home`).emit("copy id to local storage");
+                io.to(`${room_id}_home`).emit("Start custom game");
+                // io.sockets.in(`${room_id}`).leave(`${room_id}`)
                 // Start_Custom_game(socket.room_id);
 
             }
@@ -206,7 +243,7 @@ io.on("connection", (socket) => {
         socket.room_id = no_of_ongoing_games + 1;
         socket.name = name;
         socket.color = "red";
-        socket.join(`${no_of_ongoing_games + 1}`);
+        socket.join(`${no_of_ongoing_games + 1}_home`);
         console.log("Create room created = ", socket.room_id);
         no_of_ongoing_games++;
         socket.host = true;
@@ -285,6 +322,9 @@ io.on("connection", (socket) => {
     // })
 
     function Start_Custom_game(room_id) {
+        // io.sockets.clients(`${room_id}`).forEach(function (s) {
+        //     console.log(`socket clients ${room_id} = `, s.id);
+        // });
         console.log("Start_custom_game started");
         console.log("ongoing games: ", ongoing_game);
         console.log("custom games: ", custom_players);
@@ -294,13 +334,13 @@ io.on("connection", (socket) => {
                 "current_no": 0
             };
         }
-
-        console.log("ongoing games before: ", ongoing_game);
-        console.log("custom games before: ", custom_players);
         clear_custom_players();
+        // console.log("ongoing games before: ", ongoing_game);
+        // console.log("custom games before: ", custom_players);
         console.log("custom_players after", custom_players);
         console.log("ongoing_games after", ongoing_game);
         // no_of_ongoing_games++;
+        send_custom_player_color(room_id);
         send_player_name();
         console.log("socket.room_id: ", socket.room_id);
         console.log("current_no: ", current_no);
@@ -358,6 +398,13 @@ io.on("connection", (socket) => {
         Object.keys(custom_players).forEach(key => {
             delete custom_players[key];
         });
+    }
+    function send_custom_player_color(room_id) {
+        console.log("send_custom_player_color");
+        for (let i = 0; i < 4; i++) {
+            io.to(`${ongoing_game[`${room_id}`][`${player_order[i]}`]}`).emit("player_color", player_order[i]);
+        }
+
     }
 
 

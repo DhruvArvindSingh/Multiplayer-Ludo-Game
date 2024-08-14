@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/Ludo.css">
+</head>
+
+<body>
+
+    <div class="main_board">
+        <div class="inner_board">
+            <div class="player_container" id="player_container_2">
+                <div class="inner_player_container">
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="yellow_piece_1_locked" data-next="1,1"
+                            id="yellow_piece_1_locked">
+                        </div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="yellow_piece_2_locked" data-next="1,1"
+                            id="yellow_piece_2_locked">
+                        </div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="yellow_piece_3_locked" data-next="1,1"
+                            id="yellow_piece_3_locked">
+                        </div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="yellow_piece_4_locked" data-next="1,1"
+                            id="yellow_piece_4_locked">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class=" middle_path_v" id="middle_path_3">
+            </div>
+            <div class="player_container" id="player_container_3">
+                <div class="inner_player_container">
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="green_piece_1_locked" data-next="2,13"
+                            id="green_piece_1_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="green_piece_2_locked" data-next="2,13"
+                            id="green_piece_2_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="green_piece_3_locked" data-next="2,13"
+                            id="green_piece_3_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="green_piece_4_locked" data-next="2,13"
+                            id="green_piece_4_locked"></div>
+                    </div>
+                </div>
+            </div>
+            <div class=" middle_path_h" id="middle_path_2">
+            </div>
+            <div class="center_container"></div>
+            <div class=" middle_path_h" id="middle_path_4">
+            </div>
+            <div class="player_container" id="player_container_1">
+                <div class="inner_player_container">
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="blue_piece_1_locked" data-next="0,4"
+                            id="blue_piece_1_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="blue_piece_2_locked" data-next="0,4"
+                            id="blue_piece_2_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="blue_piece_3_locked" data-next="0,4"
+                            id="blue_piece_3_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="blue_piece_4_locked" data-next="0,4"
+                            id="blue_piece_4_locked"></div>
+                    </div>
+                </div>
+            </div>
+            <div class=" middle_path_v" id="middle_path_1">
+            </div>
+            <div class="player_container" id="player_container_4">
+                <div class="inner_player_container">
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="red_piece_1_locked" data-next="3,16"
+                            id="red_piece_1_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="red_piece_2_locked" data-next="3,16"
+                            id="red_piece_2_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="red_piece_3_locked" data-next="3,16"
+                            id="red_piece_3_locked"></div>
+                    </div>
+                    <div class="outer_piece_container">
+                        <div class="piece_container" data-pos="red_piece_4_locked" data-next="3,16"
+                            id="red_piece_4_locked"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="player_card_1">
+        <!-- <div class="player_video player_1_video"></div> -->
+        <div class="player_1_details player_details" id="blue_details">
+            <div class="player_name player_1_name" id="blue_player_name"></div>
+            <div class="player_dice player_1_dice">
+                <div class="random_num" id="blue_random_num"></div>
+                <div class="random_btn" id="blue_random_btn">PLAY</div>
+            </div>
+        </div>
+    </div>
+    <div class="player_card_2">
+        <!-- <div class="player_video player_2_video"></div> -->
+        <div class="player_2_details player_details" id="yellow_details">
+            <div class="player_name player_2_name" id="yellow_player_name"></div>
+            <div class="player_dice player_2_dice">
+                <div class="random_num" id="yellow_random_num"></div>
+                <div class="random_btn" id="yellow_random_btn">PLAY</div>
+            </div>
+        </div>
+    </div>
+    <div class="player_card_3">
+        <!-- <div class="player_video player_3_video"></div> -->
+        <div class="player_3_details player_details" id="green_details">
+            <div class="player_name player_3_name" id="green_player_name"></div>
+            <div class="player_dice player_3_dice">
+                <div class="random_num" id="green_random_num"></div>
+                <div class="random_btn " id="green_random_btn">PLAY</div>
+            </div>
+        </div>
+    </div>
+    <div class="player_card_4">
+        <!-- <div class="player_video player_4_video"></div> -->
+        <div class="player_4_details player_details" id="red_details">
+            <div class="player_name player_4_name" id="red_player_name"></div>
+            <div class="player_dice player_4_dice">
+                <div class="random_num " id="red_random_num"></div>
+                <div class="random_btn " id="red_random_btn">PLAY</div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="/Custom.js"></script>
+
+</body>
+
+</html>

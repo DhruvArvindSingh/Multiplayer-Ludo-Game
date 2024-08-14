@@ -9,11 +9,20 @@ body {
     background-color: skyblue;
     display: flex;
     justify-content: center;
-    /* align-items: center; */
+    align-items: center;
     height: 100vh;
     flex-direction: column;
-    width: screen;
+    width: 100vw;
     font-family: 'Poppins', sans-serif;
+}
+
+#cover_page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .title_div {
@@ -27,61 +36,64 @@ body {
 
 /* .title {
     /* padding-top: 30px; */
-    /* font-size: 80px; */
+/* font-size: 80px; */
 /* }  */
 
 
 /* Title css */
 
- 
+
 .playful span {
     position: relative;
     color: #5362F6;
     text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
     animation: scatter 1.75s infinite;
-  }
-  
-  .playful span:nth-child(2n) {
+}
+
+.playful span:nth-child(2n) {
     color: #ED625C;
     text-shadow: 0.25px 0.25px #F2A063, 0.5px 0.5px #F2A063, 0.75px 0.75px #F2A063, 1px 1px #F2A063, 1.25px 1.25px #F2A063, 1.5px 1.5px #F2A063;
     animation-delay: 0.3s;
-  }
-  
-  .playful span:nth-child(3n) {
+}
+
+.playful span:nth-child(3n) {
     color: #FFD913;
     text-shadow: 0.25px 0.25px #6EC0A9, 0.5px 0.5px #6EC0A9, 0.75px 0.75px #6EC0A9, 1px 1px #6EC0A9, 1.25px 1.25px #6EC0A9, 1.5px 1.5px #6EC0A9;
     animation-delay: 0.15s;
-  }
-  
-  .playful span:nth-child(5n) {
+}
+
+.playful span:nth-child(5n) {
     color: #555BFF;
     text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
     animation-delay: 0.4s;
-  }
-  
-  .playful span:nth-child(7n), .playful span:nth-child(11n) {
+}
+
+.playful span:nth-child(7n),
+.playful span:nth-child(11n) {
     color: #FF9C55;
     text-shadow: 0.25px 0.25px #FF5555, 0.5px 0.5px #FF5555, 0.75px 0.75px #FF5555, 1px 1px #FF5555, 1.25px 1.25px #FF5555, 1.5px 1.5px #FF5555;
     animation-delay: 0.25s;
-  }
-  
-  @keyframes scatter {
+}
+
+@keyframes scatter {
     0% {
-      top: 0;
+        top: 0;
     }
+
     50% {
-      top: -10px;
+        top: -10px;
     }
+
     100% {
-      top: 0;
+        top: 0;
     }
-  }
-  
-  h1 {
+}
+
+h1 {
     font-size: 150px;
     text-transform: uppercase;
     font-family: "Archivo Black", "Archivo", sans-serif;
-    font-weight: bolder;
+    font-weight: normal;
     display: block;
     width: 666px;
     max-width: 80vw;
@@ -90,11 +102,11 @@ body {
     text-align: center;
     margin: 10rem auto;
     margin: calc(50vh - 5rem) auto;
-  }
-  
+}
 
 
-    /* MAIN BODY */
+
+/* MAIN BODY */
 
 
 
@@ -267,3 +279,111 @@ path.two {
         fill: white;
     }
 }
+
+
+/* Create btn modal box */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 350px;
+    height: 300px;
+    border-radius: 10px;
+    font-size: larger;
+    /* display: flex; */
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content p {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 50px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#Create_room,
+#Join_room {
+    display: none;
+}
+
+.joined_players {
+    width: 93%;
+    height: 60%;
+    border-radius: 30px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 2px solid black;
+    text-align: justify;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+    /* background-color: red; */
+    padding: 10px;
+}
+
+.player {
+    margin-top: 2px;
+    width: 100%;
+    height: 50px;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#join_main_content p {
+    font-size: 40px;
+}
+
+/* #input_box_join {
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 60%;
+    height: 40px;
+    text-align: center;
+
+} */
+
+#input_box_join {
+    margin-top: 26px;
+    border-radius: 18px;
+    font-size: 30px;
+    text-align: center;
+    /* font-family: ; */
+    width: 100%;
+    z-index: 2;
+    height: 49px;
+    text-align: center;
+    /* border: 2px solid rgb(255, 0, 0); */
+    background-color: #555BFF;
+}
+
+/* .modal-content input {
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    font-size: 30px;
+    border-radius: 10px;
+    border: 2px solid black;
+    background-color: #6EC0A9;
+} */

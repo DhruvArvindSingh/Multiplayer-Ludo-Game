@@ -1,51 +1,13 @@
-const socket = io();
-console.log("io = ", socket.id);
 let player_color = ["blue", "yellow", "green", "red"];
 const player_order = ["red", "green", "yellow", "blue"];
 let working = false;
 let dice = null;
 let other_p_dice = null;
 let my_color = null;
-let my_id;
-let custom = false;
-let my_room_id;
-let my_name;
-if (sessionStorage.getItem("id") == null) {
-    my_id = null;
-}
-else {
-    console.log("sessionStorage.getItem('id'): ", sessionStorage.getItem("id"));
-    socket.id = sessionStorage.getItem("id");
-    my_room_id = sessionStorage.getItem("room_id");
-    console.log("my_room_id: ", my_room_id);
-    // socket.room_id = my_room_id;
-    socket.emit("update socket data", sessionStorage.getItem("id"), sessionStorage.getItem("room_id"), sessionStorage.getItem("name"));
-    socket.emit("check socket.id", sessionStorage.getItem("id"));
-    console.log("socket.id after changes: ", socket.id);
-    my_name = sessionStorage.getItem("name");
-}
-// if (sessionStorage.getItem("room_id") == null) {
-//     my_room_id = null;
-// }
-// else {
-//     socket.emit("change room_id", sessionStorage.getItem("room_id"));
-//     custom = true;
-//     console.log("socket.room_id: ", socket.room_id);
-// }
-
-// if (sessionStorage.getItem("name") == null) {
-//     my_name = prompt("Enter Your Name: ");
-// }
-// else {
-//     console.log("my_name: ", my_name);
-//     socket.emit("change name", sessionStorage.getItem("name"));
-//     socket.name = my_name;
-//     console.log("socket.name : ", socket.name);
-
-// }
+let my_name = name;
 let current_players_color = null;
 let current_dice_value = null;
-
+const socket = io();
 Create_board();
 function Create_board() {
     console.log("Yo");
@@ -63,6 +25,7 @@ function Create_board() {
             // square.innerHTML = `(${i},${j})`
             middle_path.appendChild(square);
             let nxt_pos = get_next_pos(i, j);
+
         }
         // console.log(middle_path);
     }
@@ -465,12 +428,8 @@ function check_for_locked_pieces() {
     return ans;
 };
 //Player Cards Function Below
-if (custom == false) {
-    socket.emit("my_name", my_name);
-}
-else {
-    socket.emit("init custom game", my_room_id);
-}
+
+socket.emit("my_name", my_name);
 
 socket.on("player_color", (color) => {
     my_color = color;

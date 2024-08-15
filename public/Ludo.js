@@ -432,6 +432,10 @@ function clear_all_dice_value() {
         document.getElementById(`${player_color[i]}_random_num`).innerText = "";
     }
 }
+function remove_piece(color){
+    
+}
+
 function add_blink_animation(box) {
     console.log("add_blink_animation");
     box.classList.add("blink_animation");
@@ -465,6 +469,15 @@ function check_for_locked_pieces() {
     }
     return ans;
 };
+
+function remove_player(color) {
+    let left_player = document.getElementById(`${color}_player_name`);
+    let name = left_player.innerText;
+    alert(`${name} has left the game`);
+    console.log("name: ", name);
+    left_player.innerText = "";
+    remove_piece(color);
+}
 //Player Cards Function Below
 if (custom == false) {
     socket.emit("my_name", my_name);
@@ -572,5 +585,9 @@ socket.on("current_players_color", (color) => {
     current_players_color = color;
 })
 
+socket.on("player_disconnected", (color) => {
+    console.log("player_disconnected color: ", color);
+    remove_player(color);
+})
 
 

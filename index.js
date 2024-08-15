@@ -17,10 +17,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 let check_custom_players = {};
+let online_players = {};
 let current_players = {};
 let custom_players = {};
 let ongoing_game = {};
 let no_of_ongoing_games = 0;
+let no_of_ongoing_custom_games = 0;
 
 app.get("/", (req, res) => {
     res.render("home", {
@@ -46,14 +48,18 @@ app.get("/create", (req, res) => {
 let current_no = 0;
 // let player_color = player_order[ongoing_game[`${socket.room_id}`]["current_no"]];
 io.on("connection", (socket) => {
+    console.log("socket.id = ", socket.id + " connected");
     socket.on("update socket data", (id, room_id, name) => {
+        socket.room_prev_id = `${room_id}_home`;
+        socket.room_id = `${room_id}_home`;
+        socket.name = name;
         console.log("Custom players before update: ", custom_players);
         // console.log("socket data before updated: ", socket);
         for (let i = 0; i < 4; i++) {
-            console.log("custom_players[`${room_id}`][`${player_order[i]}`] = ", custom_players[`${room_id}`][`${player_order[i]}`]);
+            console.log("custom_players[`${room_id}`][`${player_order[i]}`] = ", custom_players[`${socket.room_prev_id}`][`${player_order[i]}`]);
             console.log("id = ", id);
-            socket.join(`${room_id}`);
-            if (custom_players[`${room_id}`][`${player_order[i]}`] == id) {
+            socket.join(`${socket.room_prev_id}`);
+            if (custom_players[`${socket.room_prev_id}`][`${player_order[i]}`] == id) {
                 console.log("if statement worked");
                 let ob = check_custom_players[`${room_id}`];
                 console.log("ob = ", ob);
@@ -64,12 +70,10 @@ io.on("connection", (socket) => {
                     check_custom_players[`${room_id}`] = [...ob, player_order[i]];
                 }
                 console.log("check_custom_players: ", check_custom_players);
-                custom_players[`${room_id}`][`${player_order[i]}`] = socket.id;
-                custom_players[`${room_id}`][`${player_order[i]}_name`] = name;
+                custom_players[`${socket.room_prev_id}`][`${player_order[i]}`] = socket.id;
+                custom_players[`${socket.room_prev_id}`][`${player_order[i]}_name`] = name;
             }
         }
-        socket.room_id = room_id;
-        socket.name = name;
         // console.log("socket data updated: ", socket.id);
         console.log("Custom players after update: ", custom_players);
         ob = check_custom_players[`${room_id}`];
@@ -86,7 +90,7 @@ io.on("connection", (socket) => {
         if (check_count == 4) {
             console.log("check_custom_players[`${room_id}`] = ", check_custom_players[`${room_id}`]);
             console.log("player_order = ", player_order);
-            Start_Custom_game(room_id);
+            Start_Custom_game(socket.room_prev_id);
         }
         else {
             check_count = 0
@@ -121,6 +125,7 @@ io.on("connection", (socket) => {
         // console.log("socket.id = ", socket.id);
         // console.log("socket.name = ", socket.name);
         // console.log("socket.roomm_id= ", socket.room_id);
+        console.log("online players before: ", online_players);
 
         if (!current_players.red) {
             current_players.red = socket.id;
@@ -128,6 +133,7 @@ io.on("connection", (socket) => {
             console.log("red");
             socket.color = "red";
             socket.room_id = no_of_ongoing_games + 1;
+            online_players[`${socket.id}`] = `${socket.room_id}`;
             socket.join(`${no_of_ongoing_games + 1}`);
             // socket.join(`red_player`);
             socket.emit("player_color", "red");
@@ -138,6 +144,7 @@ io.on("connection", (socket) => {
             console.log("green");
             socket.color = "green";
             socket.room_id = no_of_ongoing_games + 1;
+            online_players[`${socket.id}`] = `${socket.room_id}`;
             socket.join(`${no_of_ongoing_games + 1}`);
             // socket.join(`green_player`);
             socket.emit("player_color", "green");
@@ -148,16 +155,18 @@ io.on("connection", (socket) => {
             console.log("yellow");
             socket.color = "yellow";
             socket.room_id = no_of_ongoing_games + 1;
+            online_players[`${socket.id}`] = `${socket.room_id}`;
             socket.join(`${no_of_ongoing_games + 1}`);
             // socket.join(`yellow_player`);
             socket.emit("player_color", "yellow");
         }
         else if (!current_players.blue) {
             current_players.blue = socket.id;
-            current_players.game_id = current_players.red;
+            // current_players.game_id = current_players.red;
             current_players.blue_name = name;
             console.log("blue");
             socket.room_id = no_of_ongoing_games + 1;
+            online_players[`${socket.id}`] = `${socket.room_id}`;
             // for (let i = 0; i < 4; i++) {
             //     io.to[current_players[`${player_order[i]}`]].join(`${no_of_ongoing_games + 1}`);
             // }
@@ -170,48 +179,52 @@ io.on("connection", (socket) => {
             console.log("current_players", current_players);
             // clear_current_players();
             socket.emit("player_color", "blue");
-            ongoing_game++;
-            Start_Game(no_of_ongoing_games + 1);
+            no_of_ongoing_games++;
+            Start_Game(no_of_ongoing_games);
         }
+        console.log("online players after: ", online_players);
     })
     // socket.on("join_room", (my_color) => {
     //     socket.join("Game_room");
     //     socket.join(`${my_color}_player`);
     // });
     socket.on("join room", (room_id, name) => {
+
         console.log("join room request received with id: ", room_id);
         console.log("custom_players before = ", custom_players);
-        if (custom_players[`${room_id}`] != undefined) {
+        console.log("online players before : ", online_players);
+        if (custom_players[`${room_id}_home`] != undefined) {
             socket.name = name;
-            socket.room_id = room_id;
+            socket.room_id = `${room_id}_home`;
+            online_players[`${socket.id}`] = `${socket.room_id}`;
             console.log("player added to room: ", socket.room_id);
-            if (custom_players[`${room_id}`]["green"] == undefined) {
-                custom_players[`${room_id}`]["green"] = `${socket.id}`;
-                custom_players[`${room_id}`]["green_name"] = `${socket.name}`;
+            if (custom_players[`${socket.room_id}`]["green"] == undefined) {
+                custom_players[`${socket.room_id}`]["green"] = `${socket.id}`;
+                custom_players[`${socket.room_id}`]["green_name"] = `${socket.name}`;
                 socket.color = "green";
                 socket.host = false;
-                socket.join(`${room_id}_home`);
+                socket.join(`${socket.room_id}`);
                 console.log("socket.room_id: ", socket.room_id);
-                socket.emit("show players", custom_players[`${room_id}`], room_id);
-                io.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
+                socket.emit("show players", custom_players[`${socket.room_id}`], room_id);
+                io.to(`${socket.room_id}`).emit("player added", custom_players[`${socket.room_id}`]);
             }
-            else if (custom_players[`${room_id}`]["yellow"] == undefined) {
-                custom_players[`${room_id}`]["yellow"] = `${socket.id}`;
-                custom_players[`${room_id}`]["yellow_name"] = `${socket.name}`;
+            else if (custom_players[`${socket.room_id}`]["yellow"] == undefined) {
+                custom_players[`${socket.room_id}`]["yellow"] = `${socket.id}`;
+                custom_players[`${socket.room_id}`]["yellow_name"] = `${socket.name}`;
                 socket.color = "yellow";
                 socket.host = false;
-                socket.join(`${room_id}_home`);
-                socket.emit("show players", custom_players[`${room_id}`], room_id);
-                io.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
+                socket.join(`${socket.room_id}`);
+                socket.emit("show players", custom_players[`${socket.room_id}`], room_id);
+                io.to(`${socket.room_id}`).emit("player added", custom_players[`${socket.room_id}`]);
             }
-            else if (custom_players[`${room_id}`]["blue"] == undefined) {
-                custom_players[`${room_id}`]["blue"] = `${socket.id}`;
-                custom_players[`${room_id}`]["blue_name"] = `${socket.name}`;
+            else if (custom_players[`${socket.room_id}`]["blue"] == undefined) {
+                custom_players[`${socket.room_id}`]["blue"] = `${socket.id}`;
+                custom_players[`${socket.room_id}`]["blue_name"] = `${socket.name}`;
                 socket.color = "blue";
                 socket.host = false;
-                socket.join(`${room_id}_home`);
-                socket.emit("show players", custom_players[`${room_id}`], room_id);
-                socket.to(`${room_id}_home`).emit("player added", custom_players[`${room_id}`]);
+                socket.join(`${socket.room_id}`);
+                socket.emit("show players", custom_players[`${socket.room_id}`], room_id);
+                socket.to(`${socket.room_id}`).emit("player added", custom_players[`${socket.room_id}`]);
                 // for (let i = 0; i < 4; i++) {
 
                 // }
@@ -230,32 +243,33 @@ io.on("connection", (socket) => {
             console.log("Room not found!!");
             socket.emit("room not found");
         }
+        console.log("online players after: ", online_players);
         console.log("custom_players after = ", custom_players);
 
     })
 
     const player_order = ["red", "green", "yellow", "blue"];
 
-    socket.on("init custom game", (room_id) => {
-
-    })
-
     socket.on("create_room", (name) => {
         // console.log()
         console.log("ongoing_game = ", ongoing_game);
-        socket.room_id = no_of_ongoing_games + 1;
+        console.log("online players before: ", online_players);
+        socket.room_id = `${no_of_ongoing_custom_games + 1}_home`;
+        online_players[`${socket.id}`] = `${socket.room_id}`;
         socket.name = name;
         socket.color = "red";
-        socket.join(`${no_of_ongoing_games + 1}_home`);
+        socket.join(`${no_of_ongoing_custom_games + 1}_home`);
         console.log("Create room created = ", socket.room_id);
-        no_of_ongoing_games++;
+        no_of_ongoing_custom_games++;
         socket.host = true;
-        console.log("no_of_ongoing_games = ", no_of_ongoing_games);
+        console.log("no_of_ongoing_custom_games = ", no_of_ongoing_custom_games);
+        console.log("socket.room_id = ", socket.room_id);
         custom_players[`${socket.room_id}`] = {
             ...custom_players[`${socket.room_id}`], "red": `${socket.id}`, "red_name": `${socket.name}`
         };
         console.log("custom_players = ", custom_players);
-        socket.emit("create_room_id", socket.room_id);
+        socket.emit("create_room_id", no_of_ongoing_custom_games);
+        console.log("online players after: ", online_players);
     })
 
     socket.on("dice_value", async (dice_value) => {
@@ -319,6 +333,30 @@ io.on("connection", (socket) => {
         socket.emit("draw_dice", color);
 
     })
+    socket.on("leave_room", (room_id) => {
+        console.log("online players before update: ", online_players);
+        console.log("leave room request received with id: ", socket.id + " and room_id = ", room_id);
+        socket.leave(`${online_players[`${socket.id}`]}`);
+        delete online_players[`${socket.id}`];
+
+        console.log("online players after update: ", online_players);
+    })
+    socket.on("disconnect", () => {
+        // console.log("socket.color = ", socket.color);
+        // console.log("socket.name = ", socket.name);
+        console.log("socket.id = ", socket.id + " disconnected");
+        console.log("online_players[`${socket.id}`]: ", online_players[`${socket.id}`]);
+        if (online_players[`${socket.id}`] != null) {
+            // () => {
+                console.log("if statement worked");
+                console.log("ongoing_game = ", ongoing_game);
+                socket.leave(`${online_players[`${socket.id}`]}`);
+                let o = player_disconnected(socket.id);
+                delete online_players[`${socket.id}`];
+            // }
+
+        };
+    })
     // socket.on("status of board", (status) => {
     //     console.log("status of board : ", status);
     //     io.except(socket.id).emit("current board status", status);
@@ -333,7 +371,7 @@ io.on("connection", (socket) => {
         console.log("custom games: ", custom_players);
         if (ongoing_game[`${socket.room_id}`] == undefined) {
             ongoing_game[`${socket.room_id}`] = {
-                ...custom_players[`${socket.room_id}`],
+                ...custom_players[`${socket.room_prev_id}`],
                 "current_no": 0
             };
         }
@@ -343,9 +381,10 @@ io.on("connection", (socket) => {
         console.log("custom_players after", custom_players);
         console.log("ongoing_games after", ongoing_game);
         // no_of_ongoing_games++;
-        send_custom_player_color(room_id);
+        send_custom_player_color(socket.room_id);
         send_player_name();
         console.log("socket.room_id: ", socket.room_id);
+        console.log("socket.room_prev_id: ", socket.room_prev_id);
         console.log("current_no: ", current_no);
         // console.log("ongoing_game[socket.room_id][current_no]", ongoing_game[socket.room_id][current_no]);
         // console.log("ongoing_game[socket.room_id][current_no]", ongoing_game[`${socket.room_id}`][`${current_no}`]);
@@ -354,7 +393,8 @@ io.on("connection", (socket) => {
     }
     function Start_Game(room_id) {
         console.log("Start_game");
-        ongoing_game[`${socket.room_id}`] = {
+        console.log("room_id = ", room_id);
+        ongoing_game[`${room_id}`] = {
             ...current_players
         };
         clear_current_players();
@@ -408,6 +448,11 @@ io.on("connection", (socket) => {
             io.to(`${ongoing_game[`${room_id}`][`${player_order[i]}`]}`).emit("player_color", player_order[i]);
         }
 
+    }
+    function player_disconnected(id) {
+        console.log("player_disconnected");
+        io.to(`${online_players[`${id}`]}`).emit("player_disconnected", socket.color);
+        return 1;
     }
 
 

@@ -62,6 +62,8 @@ let back = document.getElementById("cover_page")
 span.onclick = function () {
     modal.style.display = "none";
     back.style.display = "flex";
+    console.log("room_id = ", room_id);
+    socket.emit("leave_room", room_id);
 }
 
 function create_match() {

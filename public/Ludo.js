@@ -34,9 +34,9 @@ else {
 //     console.log("socket.room_id: ", socket.room_id);
 // }
 
-// if (sessionStorage.getItem("name") == null) {
-//     my_name = prompt("Enter Your Name: ");
-// }
+if (sessionStorage.getItem("name") == null) {
+    my_name = prompt("Enter Your Name: ");
+}
 // else {
 //     console.log("my_name: ", my_name);
 //     socket.emit("change name", sessionStorage.getItem("name"));

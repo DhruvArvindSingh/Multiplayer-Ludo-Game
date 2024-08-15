@@ -158,6 +158,9 @@ io.on("connection", (socket) => {
             current_players.blue_name = name;
             console.log("blue");
             socket.room_id = no_of_ongoing_games + 1;
+            // for (let i = 0; i < 4; i++) {
+            //     io.to[current_players[`${player_order[i]}`]].join(`${no_of_ongoing_games + 1}`);
+            // }
             socket.join(`${no_of_ongoing_games + 1}`);
             socket.color = "blue";
             // socket.join(`blue_player`);
@@ -167,7 +170,7 @@ io.on("connection", (socket) => {
             console.log("current_players", current_players);
             // clear_current_players();
             socket.emit("player_color", "blue");
-            // ongoing_game++;
+            ongoing_game++;
             Start_Game(no_of_ongoing_games + 1);
         }
     })

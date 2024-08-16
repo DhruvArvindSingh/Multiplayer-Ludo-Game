@@ -10,6 +10,7 @@ let my_id;
 let custom = false;
 let my_room_id;
 let my_name;
+let status_of_board;
 if (sessionStorage.getItem("id") == null) {
     my_id = null;
 }
@@ -244,6 +245,7 @@ function move(value, piece) {
                 return;
             }
             else {
+                send_status_of_board();
                 return;
             }
         }
@@ -358,7 +360,7 @@ function move_by_one(piece, death) {
 }
 
 function send_status_of_board() {
-    let status_of_board = get_status_of_board();
+    status_of_board = get_status_of_board();
     // console.log("status_of_board : ", status_of_board);
     socket.emit("status of board", status_of_board);
 }
@@ -423,8 +425,10 @@ function remove_dice_value(color) {
     else if (color == "blue") {
         p_color = "yellow";
     }
-    let display = document.getElementById(`${p_color}_random_num`);
-    display.innerHTML = "";
+    setTimeout(() => {
+        let display = document.getElementById(`${p_color}_random_num`);
+        display.innerHTML = "";
+    }, 2000);
 }
 function clear_all_dice_value() {
     console.log("clear_all_dice_value");
@@ -432,8 +436,14 @@ function clear_all_dice_value() {
         document.getElementById(`${player_color[i]}_random_num`).innerText = "";
     }
 }
-function remove_piece(color){
-    
+function remove_piece(color) {
+    console.log("remove_piece received", color);
+    for (let i = 0; i < 4; i++) {
+        let piece = document.getElementById(`${color}_${i + 1}`);
+        console.log("remove_piece : ", piece);
+        piece.style.display = "none";
+    }
+
 }
 
 function add_blink_animation(box) {
@@ -581,8 +591,22 @@ socket.on("current_dice_value", (value) => {
     // allow_move(p_color);
 })
 socket.on("current_players_color", (color) => {
-    clear_all_dice_value();
+    setTimeout(() => {
+        clear_all_dice_value();
+    }, 2000);
     current_players_color = color;
+})
+
+socket.on("add pieces", (color,status) => {
+    console.log("add_piece received", color);
+    for (let i = 0; i < 4; i++) {
+        let piece = document.getElementById(`${color}_${i + 1}`);
+        console.log("add_piece : ", piece);
+        if(piece.style.display = "none"){
+            piece.style.display = "flex";
+        }
+    }
+    update_board(status);
 })
 
 socket.on("player_disconnected", (color) => {

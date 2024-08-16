@@ -350,7 +350,7 @@ body {
     animation: backgrounds 1s infinite;
 }
 
-@keyframe backgrounds {
+/* @keyframe backgrounds {
     0% {
         background-color: white;
     }
@@ -358,14 +358,14 @@ body {
     50% {
         background-color: green;
         /* opacity: 0; */
-    }
+    /* }
 
     100% {
         background-color: purple;
         /* opacity: 1; */
-    }
+    /* } */
 
-}
+/* } */ 
 
 .border_animation {
     outline-width: 1px;

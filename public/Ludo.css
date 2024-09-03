@@ -537,3 +537,107 @@ body {
     }
 
 }
+
+
+
+.outline_animation {
+  outline-width: 15px;
+  outline-offset: 0;
+  outline-color: rgba(0, 73, 114, 0.75);
+  outline-style: solid;
+  animation: animateOutline 1s ease infinite;
+}
+
+@keyframes animateOutline {
+  0% {
+    outline-width: 0px;
+    outline-offset: 0;
+    outline-color: rgba(0, 0, 0, 0);
+  }
+
+  10% {
+    outline-color: rgba(0, 0, 0, 0.75);
+  }
+
+  /* The animation finishes at 50% */
+  50% {
+    outline-width: 15px;
+    outline-offset: 4px;
+    outline-color: rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    outline-width: 30px;
+    outline-offset: 8px;
+    outline-color: rgba(0, 0, 0, 0);
+  }
+}
+.z_index{
+    z-index:  1;;
+}
+
+
+
+/* Waiting Page CSS */
+.playful span {
+    position: relative;
+    color: #5362F6;
+    text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
+    animation: scatter 1.75s infinite;
+}
+
+.playful span:nth-child(2n) {
+    color: #ED625C;
+    text-shadow: 0.25px 0.25px #F2A063, 0.5px 0.5px #F2A063, 0.75px 0.75px #F2A063, 1px 1px #F2A063, 1.25px 1.25px #F2A063, 1.5px 1.5px #F2A063;
+    animation-delay: 0.3s;
+}
+
+.playful span:nth-child(3n) {
+    color: #FFD913;
+    text-shadow: 0.25px 0.25px #6EC0A9, 0.5px 0.5px #6EC0A9, 0.75px 0.75px #6EC0A9, 1px 1px #6EC0A9, 1.25px 1.25px #6EC0A9, 1.5px 1.5px #6EC0A9;
+    animation-delay: 0.15s;
+}
+
+.playful span:nth-child(5n) {
+    color: #555BFF;
+    text-shadow: 0.25px 0.25px #E485F8, 0.5px 0.5px #E485F8, 0.75px 0.75px #E485F8, 1px 1px #E485F8, 1.25px 1.25px #E485F8, 1.5px 1.5px #E485F8;
+    animation-delay: 0.4s;
+}
+
+.playful span:nth-child(7n),
+.playful span:nth-child(11n) {
+    color: #FF9C55;
+    text-shadow: 0.25px 0.25px #FF5555, 0.5px 0.5px #FF5555, 0.75px 0.75px #FF5555, 1px 1px #FF5555, 1.25px 1.25px #FF5555, 1.5px 1.5px #FF5555;
+    animation-delay: 0.25s;
+}
+
+@keyframes scatter {
+    0% {
+        top: 0;
+    }
+
+    50% {
+        top: -10px;
+    }
+
+    100% {
+        top: 0;
+    }
+}
+
+h1 {
+    font-size: 150px;
+    text-transform: uppercase;
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-weight: normal;
+    display: block;
+    width: 666px;
+    max-width: 80vw;
+    min-height: 90px;
+    height: auto;
+    text-align: center;
+    margin: 10rem auto;
+    margin: calc(50vh - 5rem) auto;
+}
+
+

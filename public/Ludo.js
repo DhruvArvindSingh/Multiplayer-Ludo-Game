@@ -286,7 +286,7 @@ function move(value, piece) {
     //     console.log("value == 6 , So one more try");
     //     socket.emit("draw")
     // }
-
+    remove_blink_piece_animation(my_color);
     working == false;
     value == null;    // }
 
@@ -448,7 +448,23 @@ function remove_piece(color) {
 
 function add_blink_animation(box) {
     console.log("add_blink_animation");
+    console.log("box =  ", box);
     box.classList.add("blink_animation");
+}
+function add_blink_piece_animation(color) {
+    console.log("add_blink_piece_animation called");
+    for (let i = 1; i <= 4; i++) {
+        let piece = document.getElementById(`${color}_${i}`);
+        piece.classList.add("blink_animation");
+    }
+}
+
+function remove_blink_piece_animation(color) {
+    console.log("remove_blink_piece_animation called");
+    for (let i = 1; i <= 4; i++) {
+        let piece = document.getElementById(`${color}_${i}`);
+        piece.classList.remove("blink_animation");
+    }
 }
 function add_background_animation(box) {
     console.log("add_background_animation");
@@ -479,6 +495,38 @@ function check_for_locked_pieces() {
     }
     return ans;
 };
+function add_outline_animation(color) {
+    console.log("color = ", color);
+    
+    let player_area = document.getElementById(`player_container_${ player_color.indexOf(`${color}`) + 1 }`);
+    // console.log("index ofplayer_color[`${color}`] = ", player_color.indexOf(`${color}`));
+    // console.log("index ofplayer_order[`${color}`] = ", player_color.indexOf(`${color}`));
+    console.log("player_area = ", player_area);
+    if (player_area.classList != null) {
+        player_area.classList.add("outline_animation");
+    }
+    else {
+        player_area.setAttribute("class", "outline_animation");
+    }
+}
+function remove_outline_animation(color) {
+    console.log("color = ", color);
+    let prev_color;
+    if (color == "red") {
+        prev_color = "blue";
+    }
+    else {
+        prev_color = player_order[player_order.indexOf(`${color}`) - 1];
+    }
+    console.log("prev_color = ", prev_color);
+    let player_area = document.getElementById(`player_container_${ player_color.indexOf(`${prev_color}`) + 1 }`);
+    // console.log("index ofplayer_color[`${color}`] = ", player_color.indexOf(`${color}`));
+    // console.log("index ofplayer_order[`${color}`] = ", player_color.indexOf(`${color}`));
+    console.log("player_area = ", player_area);
+    if (player_area.classList != null) {
+        player_area.classList.remove("outline_animation");
+    }
+}
 
 function remove_player(color) {
     let left_player = document.getElementById(`${color}_player_name`);
@@ -507,6 +555,10 @@ console.log("my_color", my_color);
 socket.on("player_names", (all_names) => {
     console.log("Players name request received: ", all_names);
     names = all_names.split(" ");
+    let game_page = document.getElementById("Game_page");
+    let loading_page = document.getElementById("Loading_page");
+    game_page.style.display = "block";
+    loading_page.style.display = "none";
     for (let i = 0; i <= names.length - 2; i++) {
         p_color = names[i].split("-")[0];
         p_name = names[i].split("-")[1];
@@ -516,6 +568,7 @@ socket.on("player_names", (all_names) => {
 })
 
 socket.on("draw_dice", (color) => {
+    remove_outline_animation(color);
     clear_all_dice_value();
     console.log("draw_dice color: ", color);
     if (color == my_color) {
@@ -553,11 +606,13 @@ socket.on("draw_dice", (color) => {
 
 })
 socket.on("allow_move", (color) => {
+    console.log("allow move receiveed");
     let h = check_for_locked_pieces();
     if (h == 4 && dice < 6) {
         socket.emit("next_turn", my_color);
         return;
     }
+    add_blink_piece_animation(color);
     console.log("allow_move : color =", color);
     if (color == my_color) {
         for (let i = 1; i <= 4; i++) {
@@ -590,10 +645,12 @@ socket.on("current_dice_value", (value) => {
     dicee.innerText = p_value;
     // allow_move(p_color);
 })
-socket.on("current_players_color", (color) => {
+socket.on("current_players_color", async(color) => {
     setTimeout(() => {
         clear_all_dice_value();
     }, 2000);
+    remove_outline_animation(color);
+    add_outline_animation(color);
     current_players_color = color;
 })
 

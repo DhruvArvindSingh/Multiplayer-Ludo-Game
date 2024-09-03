@@ -25,6 +25,16 @@ let ongoing_game = {};
 let no_of_ongoing_games = 0;
 let no_of_ongoing_custom_games = 0;
 
+app.use((req, res, next) => {
+    // console.log("req:", req);
+    // console.log("\n\n\n");
+    console.log("req_method:", req.method);
+    console.log("req.path = :", req.path);
+    console.log("req.date = :", req.date);
+    console.log("req.timestamp = :", req.timestamp);
+    next();
+})
+
 app.get("/", (req, res) => {
     res.render("home", {
         title: "Home"
@@ -461,6 +471,7 @@ io.on("connection", (socket) => {
         ongoing_game[`${room_id}`] = {
             ...current_players
         };
+
         clear_current_players();
         console.log("current_players", current_players);
         console.log("ongoing_games", ongoing_game);

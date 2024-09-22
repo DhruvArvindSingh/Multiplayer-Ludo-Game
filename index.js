@@ -8,6 +8,7 @@ const io = new socket_io.Server(server);
 const player_order = ["red", "green", "yellow", "blue"];
 const ShortUniqueId = require('short-unique-id');
 const { randomUUID } = new ShortUniqueId({ length: 10 });
+// const home =  require("../Client/views/home.ejs");
 
 // import { Start_Game, draw_dice, allow_move } from "./routes/Board_func.js";
 //below line actually lets us use ejs file for views folder

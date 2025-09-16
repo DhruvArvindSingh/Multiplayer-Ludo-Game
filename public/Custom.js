@@ -10,7 +10,7 @@ let current_dice_value = null;
 const socket = io();
 Create_board();
 function Create_board() {
-    console.log("Yo");
+    console.log("Hello");
     for (let i = 0; i < 4; i++) {
         let k = 4, l = 1;
         let middle_path = document.getElementById(`middle_path_${i + 1}`);
